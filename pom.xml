@@ -27,6 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
+		<configuration-distribution>java</configuration-distribution>
 		<java.version>17</java.version>
 		<spring-cloud.version>2024.0.1</spring-cloud.version>
 		<azure.resource.group>azure-batch-group</azure.resource.group>
@@ -75,7 +76,9 @@
 				<groupId>com.microsoft.azure</groupId>
 				<artifactId>azure-functions-maven-plugin</artifactId>
 				<version>1.17.0</version>
+				
 				<configuration>
+					<distribution>java</distribution>
 					<resourceGroup>${azure.resource.group}</resourceGroup>
 					<appName>${azure.function.appName}</appName>
 					<region>${azure.region}</region>
