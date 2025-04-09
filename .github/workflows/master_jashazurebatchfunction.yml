@@ -1,55 +1,42 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Java project to Azure Function App - jashazurebatchfunction
+name: Deploy to Azure Function App
 
 on:
   push:
     branches:
-      - master
-  workflow_dispatch:
-
-env:
-  AZURE_FUNCTIONAPP_NAME: jashazurebatchfunction # set this to your function app name on Azure
-  PACKAGE_DIRECTORY: '.' # set this to the directory which contains pom.xml file
-  JAVA_VERSION: '17' # set this to the java version to use
+      - master  # Trigger deployment on changes to the main branch
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
 
     steps:
-      - name: 'Checkout GitHub Action'
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Setup Java Sdk ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v1
-        with: |+
-          java-version: ${{ env.JAVA_VERSION }}
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'  # Set your Java version here
 
-      - name: 'Restore Project Dependencies Using Mvn'
-        shell: pwsh
-        run: |+
-          pushd './${{ env.PACKAGE_DIRECTORY }}'
-          mvn clean package
-          popd
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AE5262FF6F6645CB96712EF3AE5142DF }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_05802221C4E34883ADE68FB58C7805FE }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E80A2470D6134E95B00B8DF3F641C071 }}
+    - name: Cache Maven dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
 
-      - name: 'Run Azure Functions Action'
-        uses: Azure/functions-action@v1
-        id: fa
-        with:
-          app-name: 'jashazurebatchfunction'
-          slot-name: 'Production'
-          package: '${{ env.PACKAGE_DIRECTORY }}'
-          respect-pom-xml: true
+    - name: Build with Maven
+      run: mvn clean package -DskipTests
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+    - name: Deploy to Azure Function App
+      run: mvn azure-functions:deploy
+
           
