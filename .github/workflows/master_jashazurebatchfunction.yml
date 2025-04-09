@@ -35,4 +35,4 @@ jobs:
         creds: '{"clientId": "${{ secrets.AZURE_CLIENT_ID }}", "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}", "tenantId": "${{ secrets.AZURE_TENANT_ID }}"}'
 
     - name: Deploy to Azure Function App
-      run: mvn azure-functions:deploy
+      run: mvn azure-functions:deploy -Ddistribution=java
