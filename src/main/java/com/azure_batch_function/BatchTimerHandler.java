@@ -5,22 +5,33 @@ import com.microsoft.azure.functions.*;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.function.Consumer;
 
 @Component
 public class BatchTimerHandler {
 
+	public static String EXECUTION_CONTEXT = "executionContext";
+
     @Autowired
-    private Consumer<String> processBatch;
+    private Consumer<Message<String>> processBatch;
 
-    @FunctionName("batchJob")
-    public void runBatchJob(
-        @TimerTrigger(name = "timerInfo", schedule = "0 */5 * * * *") String timerInfo,
-        final ExecutionContext context) {
+    @FunctionName("processBatch")
+    @ExponentialBackoffRetry(maxRetryCount = 4, maximumInterval = "00:15:00", minimumInterval = "00:00:03")
+    public void executeExpRetry(@TimerTrigger(name = "keepAliveTrigger", schedule = "0 */5 * * * *") String timerInfo,
+            ExecutionContext context) {
 
-        context.getLogger().info("Batch job triggered by timer: " + timerInfo);
-        processBatch.accept("TriggeredByTimer");
+
+        context.getLogger().info("Process Batch check");
+        
+        Message<String> message = MessageBuilder
+                .withPayload(timerInfo)
+                .setHeader(EXECUTION_CONTEXT, context)
+                .build();
+
+        this.processBatch.accept(message);
     }
 }
 
