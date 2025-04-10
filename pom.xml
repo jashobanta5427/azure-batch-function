@@ -77,11 +77,12 @@
 				<version>1.22.0</version>
 
 				<configuration>
+
 					<appName>${azure.function.appName}</appName>
 					<resourceGroup>${azure.resource.group}</resourceGroup>
 					<region>${azure.region}</region>
-					<!--<appServicePlanName>${functionAppServicePlanName}</appServicePlanName>
-					<pricingTier>${functionPricingTier}</pricingTier>-->
+					<appServicePlanName>ASP-azurebatchgroup-9b4b</appServicePlanName>
+					<pricingTier>Y1</pricingTier>
 
 					<hostJson>${project.basedir}/src/main/resources/host.json</hostJson>
 					<localSettingsJson>${project.basedir}/src/main/resources/local.settings.json</localSettingsJson>
