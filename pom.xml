@@ -1,126 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
-        <relativePath></relativePath>
-    </parent>
-    <groupId>com</groupId>
-    <artifactId>azure-batch-function</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>azure-batch-function</name>
-    <description>Demo project for Azure Batch Function</description>
-    <url/>
-    <properties>
-    	<start-class>com.azure_batch_function.AzureBatchFunctionApplication</start-class>
-        <configuration-distribution>java</configuration-distribution>
-        <java.version>17</java.version>
-        <spring-cloud.version>2024.0.1</spring-cloud.version>
-        <azure.resource.group>azure-batch-group</azure.resource.group>
-        <azure.function.appName>jashazurebatchfunction</azure.function.appName>
-        <azure.region>eastus2</azure.region> <!-- e.g., eastus -->
-        <spring-boot-thin-layout.version>1.0.31.RELEASE</spring-boot-thin-layout.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-function-adapter-azure</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-			<!-- Import dependency management from Spring Boot -->
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com</groupId>
+	<artifactId>azure-batch-function</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>azure-batch-function</name>
+	<description>Demo project for Azure Batch Function</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<configuration-distribution>java</configuration-distribution>
+		<java.version>17</java.version>
+		<spring-cloud.version>2024.0.1</spring-cloud.version>
+		<azure.resource.group>azure-batch-group</azure.resource.group>
+		<azure.function.appName>jashazurebatchfunction</azure.function.appName>
+		<azure.region>eastus2</azure.region> <!-- e.g., eastus -->
+	</properties>
+	<dependencies>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-dependencies</artifactId>
-			<version>3.4.4</version>
-			<type>pom</type>
-			<scope>import</scope>
+			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-        </dependencies>
-    </dependencyManagement>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-function-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-function-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-function-adapter-azure</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <build>
-        <plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
+	<build>
+		<plugins>
+			<!--  Plugin for Azure Functions  -->
 			<plugin>
 				<groupId>com.microsoft.azure</groupId>
 				<artifactId>azure-functions-maven-plugin</artifactId>
-				<version>1.22.0</version>
-
+				<version>1.17.0</version>
+				
 				<configuration>
-					<appName>${azure.function.appName}</appName>
+					<distribution>java</distribution>
 					<resourceGroup>${azure.resource.group}</resourceGroup>
+					<appName>${azure.function.appName}</appName>
 					<region>${azure.region}</region>
-					<!--<appServicePlanName>${functionAppServicePlanName}</appServicePlanName>
-					<pricingTier>${functionPricingTier}</pricingTier>-->
-
-					<hostJson>${project.basedir}/src/main/resources/host.json</hostJson>
-					<localSettingsJson>${project.basedir}/src/main/resources/local.settings.json</localSettingsJson>
-
 					<runtime>
 						<os>linux</os>
 						<javaVersion>17</javaVersion>
+						<functionRuntimeVersion>~4</functionRuntimeVersion>
 					</runtime>
-
-					<funcPort>7072</funcPort>
-
 					<appSettings>
 						<property>
-							<name>FUNCTIONS_EXTENSION_VERSION</name>
-							<value>~4</value>
+							<name>FUNCTIONS_WORKER_RUNTIME</name>
+							<value>java</value>
 						</property>
 					</appSettings>
 				</configuration>
-				<executions>
-					<execution>
-						<id>package-functions</id>
-						<goals>
-							<goal>package</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
-
+			<!--  Optional: Spring Boot Maven Plugin  -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.boot.experimental</groupId>
-						<artifactId>spring-boot-thin-layout</artifactId>
-						<version>${spring-boot-thin-layout.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
-    </build>
+	</build>
 
 </project>
