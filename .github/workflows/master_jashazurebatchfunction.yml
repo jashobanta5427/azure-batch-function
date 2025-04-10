@@ -3,7 +3,7 @@ name: Deploy to Azure Function App
 on:
   push:
     branches:
-      - master  # Trigger deployment on changes to the main branch
+      - main  # Trigger deployment on changes to the main branch
 
 jobs:
   build:
@@ -16,10 +16,10 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
-        java-version: '17'  # Set your Java version here
+        java-version: '11'  # Set your Java version here
 
     - name: Cache Maven dependencies
-      uses: actions/cache@v3  # Ensure you use the latest version here
+      uses: actions/cache@v3
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -35,4 +35,4 @@ jobs:
         creds: '{"clientId": "${{ secrets.AZURE_CLIENT_ID }}", "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}", "tenantId": "${{ secrets.AZURE_TENANT_ID }}"}'
 
     - name: Deploy to Azure Function App
-      run: mvn azure-functions:deploy -Ddistribution=java
+      run: mvn azure-functions:deploy
