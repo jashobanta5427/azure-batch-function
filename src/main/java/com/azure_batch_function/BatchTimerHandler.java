@@ -24,7 +24,7 @@ public class BatchTimerHandler {
             ExecutionContext context) {
 
 
-        context.getLogger().info("Process Batch check");
+        context.getLogger().info("==========PROCESS BATCH TRIGGERED=========");
         
         Message<String> message = MessageBuilder
                 .withPayload(timerInfo)
