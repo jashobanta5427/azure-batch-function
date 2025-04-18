@@ -20,7 +20,7 @@ public class BatchTimerHandler {
 
     @FunctionName("processBatch")
     @ExponentialBackoffRetry(maxRetryCount = 4, maximumInterval = "00:15:00", minimumInterval = "00:00:03")
-    public void executeExpRetry(@TimerTrigger(name = "keepAliveTrigger", schedule = "0 */5 * * * *") String timerInfo,
+    public void executeExpRetry(@TimerTrigger(name = "keepAliveTrigger", schedule = "%TIMER_SCHEDULE%") String timerInfo,
             ExecutionContext context) {
 
 
